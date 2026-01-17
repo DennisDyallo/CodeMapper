@@ -1,0 +1,8 @@
+bin/
+obj/
+codebase_ast/
+codebase_ast.txt
+codebase_ast.json
+*.user
+.vs/
+.idea/
