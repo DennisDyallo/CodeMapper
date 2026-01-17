@@ -99,13 +99,13 @@ class Program
 
 // ---------------- Data Structures ----------------
 
-class FileNode
+public class FileNode
 {
     public string FilePath { get; set; } = "";
     public List<CodeMember> Members { get; set; } = new();
 }
 
-class CodeMember
+public class CodeMember
 {
     public string Type { get; set; } = ""; // Class, Interface, Method, Property
     public string Signature { get; set; } = "";
@@ -115,7 +115,7 @@ class CodeMember
 
 // ---------------- Roslyn Syntax Walker ----------------
 
-class StructureCollector : CSharpSyntaxWalker
+public class StructureCollector : CSharpSyntaxWalker
 {
     public FileNode RootNode { get; }
     private Stack<CodeMember> _stack = new();
