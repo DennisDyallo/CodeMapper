@@ -30,6 +30,15 @@ wget -qO- https://raw.githubusercontent.com/DennisDyallo/CodeMapper/main/install
 - Set `PREFIX` to customize install location: `PREFIX=$HOME/custom curl ... | bash`
 - Set `VERSION` to install specific version: `VERSION=v1.0.0 curl ... | bash`
 
+### Quick Install (Windows PowerShell)
+```powershell
+irm https://raw.githubusercontent.com/DennisDyallo/CodeMapper/main/install.ps1 | iex
+```
+
+**Options:**
+- Set `$env:INSTALL_DIR` to customize install location
+- Set `$env:VERSION` to install specific version: `$env:VERSION="v1.0.0"; irm ... | iex`
+
 ### Clone & Build
 ```bash
 git clone https://github.com/DennisDyallo/CodeMapper

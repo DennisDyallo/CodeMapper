@@ -34,12 +34,22 @@ jobs:
         include:
           - os: ubuntu-latest
             rid: linux-x64
+            binary: CodeMapper
           - os: ubuntu-24.04-arm
             rid: linux-arm64
+            binary: CodeMapper
           - os: macos-latest
             rid: osx-x64
+            binary: CodeMapper
           - os: macos-latest
             rid: osx-arm64
+            binary: CodeMapper
+          - os: windows-latest
+            rid: win-x64
+            binary: CodeMapper.exe
+          - os: windows-latest
+            rid: win-arm64
+            binary: CodeMapper.exe
     
     runs-on: ${{ matrix.os }}
     
@@ -54,5 +64,11 @@ jobs:
       - name: Verify AOT publish
         run: dotnet publish CodeMapper.csproj -c Release -r ${{ matrix.rid }} --self-contained
       
-      - name: Check binary exists
-        run: test -f bin/Release/net9.0/${{ matrix.rid }}/publish/CodeMapper
+      - name: Check binary exists (Unix)
+        if: runner.os != 'Windows'
+        run: test -f bin/Release/net9.0/${{ matrix.rid }}/publish/${{ matrix.binary }}
+      
+      - name: Check binary exists (Windows)
+        if: runner.os == 'Windows'
+        run: if (!(Test-Path "bin/Release/net9.0/${{ matrix.rid }}/publish/${{ matrix.binary }}")) { exit 1 }
+        shell: pwsh

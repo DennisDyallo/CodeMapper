@@ -37,6 +37,10 @@ jobs:
             rid: osx-x64
           - os: macos-latest
             rid: osx-arm64
+          - os: windows-latest
+            rid: win-x64
+          - os: windows-latest
+            rid: win-arm64
     
     runs-on: ${{ matrix.os }}
     
@@ -51,17 +55,34 @@ jobs:
       - name: Publish AOT
         run: dotnet publish CodeMapper.csproj -c Release -r ${{ matrix.rid }} --self-contained -o publish
       
-      - name: Create tarball
+      - name: Create tarball (Unix)
+        if: runner.os != 'Windows'
         run: |
           cd publish
           mv CodeMapper codemapper
           tar -czvf codemapper-${{ matrix.rid }}.tar.gz codemapper
       
-      - name: Upload artifact
+      - name: Create zip (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cd publish
+          Rename-Item -Path "CodeMapper.exe" -NewName "codemapper.exe"
+          Compress-Archive -Path "codemapper.exe" -DestinationPath "codemapper-${{ matrix.rid }}.zip"
+        shell: pwsh
+      
+      - name: Upload artifact (Unix)
+        if: runner.os != 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: codemapper-${{ matrix.rid }}
           path: publish/codemapper-${{ matrix.rid }}.tar.gz
+      
+      - name: Upload artifact (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: codemapper-${{ matrix.rid }}
+          path: publish/codemapper-${{ matrix.rid }}.zip
 
   release:
     needs: build
@@ -84,8 +105,10 @@ jobs:
           mv artifacts/codemapper-linux-arm64/codemapper-linux-arm64.tar.gz release/
           mv artifacts/codemapper-osx-x64/codemapper-osx-x64.tar.gz release/
           mv artifacts/codemapper-osx-arm64/codemapper-osx-arm64.tar.gz release/
+          mv artifacts/codemapper-win-x64/codemapper-win-x64.zip release/
+          mv artifacts/codemapper-win-arm64/codemapper-win-arm64.zip release/
           cd release
-          sha256sum *.tar.gz > SHA256SUMS.txt
+          sha256sum *.tar.gz *.zip > SHA256SUMS.txt
           cat SHA256SUMS.txt
       
       - name: Generate attestations
@@ -101,5 +124,7 @@ jobs:
             release/codemapper-linux-arm64.tar.gz
             release/codemapper-osx-x64.tar.gz
             release/codemapper-osx-arm64.tar.gz
+            release/codemapper-win-x64.zip
+            release/codemapper-win-arm64.zip
             release/SHA256SUMS.txt
           generate_release_notes: true
