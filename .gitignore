@@ -6,3 +6,4 @@ codebase_ast.json
 *.user
 .vs/
 .idea/
+progress.md
