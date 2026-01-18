@@ -35,6 +35,9 @@ wget -qO- https://raw.githubusercontent.com/DennisDyallo/CodeMapper/main/install
 git clone https://github.com/DennisDyallo/CodeMapper
 cd CodeMapper
 dotnet build
+
+# Run directly with dotnet
+dotnet run -- "/path/to/your/repo"
 ```
 
 ### Publish as Native Executable
@@ -42,16 +45,16 @@ dotnet build
 dotnet publish -c Release -o publish
 ```
 
+After installation, try it out:
+```bash
+codemapper /path/to/repo
+```
+
 ## Usage
 
 ### Basic Usage
 ```bash
 codemapper /path/to/repo
-```
-
-Or with dotnet:
-```bash
-dotnet run -- "/path/to/your/repo"
 ```
 
 ### CLI Options
